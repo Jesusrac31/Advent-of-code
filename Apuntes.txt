@@ -13,5 +13,5 @@ Measure-Command{.\main.exe > output.out}
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}
 
 Opción 4:
-g++ -o main.exe "2024\Day_1\Day_1_1.cpp"
+g++ -o main.exe "2024\Day_2\Day_2_1.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}

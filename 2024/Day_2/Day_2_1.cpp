@@ -87,11 +87,11 @@ typedef map<int, vector<int>> miv;
 #define PB(a) push_back(a);
 
 bool sort_func(int a, int b) {
-    if (a < b) {
-        return true;
-    } else {
-        return false;
-    }
+  if (a < b) {
+    return true;
+  } else {
+    return false;
+  }
 }
 #define ord(vect) sort(vect.begin(), vect.end(), sort_func);
 
@@ -101,8 +101,8 @@ bool sort_func(int a, int b) {
 #define B begin();
 #define E end();
 #define copia(v1, v2)                                                          \
-    ;                                                                            \
-    copy(v1.begin(), v1.end(), back_inserter(v2));
+  ;                                                                            \
+  copy(v1.begin(), v1.end(), back_inserter(v2));
 
 // Funciones map
 #define F first;
@@ -113,82 +113,113 @@ double log_2 = log(2);
 double log2(int a) { return (log(a) / log_2); }
 
 void Imprime(vi vect) {
-    for (int i = 0; i < vect.size(); i++) {
-        cout << vect[i] << " ";
-    }
-    cout << "\n";
+  for (int i = 0; i < vect.size(); i++) {
+    cout << vect[i] << " ";
+  }
+  cout << "\n";
 }
 
 void Imprime2d(vector<vi> vect) {
-    for (int j = 0; j<vect.size(); j++){
-        for (int i = 0; i < vect[j].size(); i++) {
-            cout << vect[j][i] << " ";
-        }
-        cout << "\n";
+  for (int j = 0; j<vect.size(); j++){
+    for (int i = 0; i < vect[j].size(); i++) {
+        cout << vect[j][i] << " ";
     }
+    cout << "\n";
+  }
 }
 
 void Imprime_set(set<int> s) {
-    copy(s.begin(), s.end(), ostream_iterator<int>(cout, " "));
-    cout << endl;
+  copy(s.begin(), s.end(), ostream_iterator<int>(cout, " "));
+  cout << endl;
 }
 
 int maximo_comun_divisor(int a, int b) {
-    int temporal; // Para no perder b
-    while (b != 0) {
-        temporal = b;
-        b = a % b;
-        a = temporal;
-    }
-    return a;
+  int temporal; // Para no perder b
+  while (b != 0) {
+    temporal = b;
+    b = a % b;
+    a = temporal;
+  }
+  return a;
 }
 
 int minimo_comun_multiplo(int a, int b) {
-    return (a * b) / maximo_comun_divisor(a, b);
+  return (a * b) / maximo_comun_divisor(a, b);
 }
 
 bool isNumeric(string const &str) {
-    auto it = str.begin();
-    while (it != str.end() && isdigit(*it)) {
-        it++;
-    }
-    return !str.empty() && it == str.end();
+  auto it = str.begin();
+  while (it != str.end() && isdigit(*it)) {
+    it++;
+  }
+  return !str.empty() && it == str.end();
 }
 
 vi lee(int n) {
-    int el;
-    vi vect;
-    for (int i = 0; i < n; i++) {
-        cin >> el;
-        vect.PB(el);
+  int el;
+  vi vect;
+  for (int i = 0; i < n; i++) {
+    cin >> el;
+    vect.PB(el);
+  }
+  return (vect);
+}
+
+int count_space(string a){
+    int sol = 0;
+    for (int i = 0; i<a.size(); i++){
+        if (a[i] == ' '){
+            sol++;
+        }
     }
-    return (vect);
+    return sol;
+}
+
+vector<string> read_file(){
+    string nombreArchivo = "input.in";
+    ifstream archivo(nombreArchivo.c_str());
+    string linea;
+    vector<string> input;
+    // Obtener línea de archivo, y almacenar contenido en "linea"
+    while (getline(archivo, linea)) {
+        input.PB(linea)
+    }
+    return input;
 }
 
 int solve() {
-    // Code aquí
-    vi a, b;
-    int n, m;
-    while (cin >> n >> m){
-        a.PB(n);
-        b.PB(m);
-    }
-    ord(a);
-    ord(b);
-    int sol = 0;
-    for (int i = 0; i<a.size(); i++){
-        sol += abs(a[i]-b[i]);
-    }
-    cout << sol << endl;
+  // Code aquí
+  vector<string> data;
+  int sol = 0;
 
-    return 0;
+  data = read_file();
+  for (int i = 0; i<data.size(); i++){
+    vi nums;
+    int len, el;
+    len = count_space(data[i])+1;
+    nums = lee(len);
+    bool increasing;
+    increasing = nums[1]>nums[0];
+    for (int j = 1; j<nums.size(); j++){
+        if (abs(nums[j]-nums[j-1]) > 3 || abs(nums[j]-nums[j-1]) < 1){
+            sol--;
+            break;
+        }
+        else if (increasing ^ (nums[j]>nums[j-1])){
+            sol--;
+            break;
+        }
+    }
+    sol++;
+  }
+  cout << sol << endl;
+  return 0;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr); 
-    solve();
-    return 0;
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr); 
+  solve();
+  return 0;
 }
-
