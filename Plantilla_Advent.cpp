@@ -6,7 +6,7 @@
 using namespace std;
 
 int part_1() {
-  string nombreArchivo = "input.txt";
+  string nombreArchivo = "input.in";
   ifstream archivo(nombreArchivo.c_str());
   string linea;
   // Obtener línea de archivo, y almacenar contenido en "linea"
