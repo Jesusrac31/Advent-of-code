@@ -165,65 +165,77 @@ vi lee(int n) {
   return (vect);
 }
 
-bool opera(vll& nums, lli& resp, lli carry, int index = 1) {
-    if (carry < 0){
-        cout << "### OVERFLOW ###" << endl;
-    }
-    if (index == nums.size()){
-        return carry == resp;
-    }
-    bool sol = false;
-    sol = opera(nums, resp, carry+nums[index], index+1);
-    if (!sol){
-        sol = opera(nums, resp, carry*nums[index], index+1);
-    }
-    if (!sol){
-        for (int i = 0; i<to_string(nums[index]).size(); i++){
-            carry*=10;
-        }
-        sol = opera(nums, resp, carry + nums[index], index+1);
-    }
-    return sol;
-}
-
 int solve() {
   // Code aquí
-  lli sol = 0;
-
-  string nombreArchivo = "input.in";
-  ifstream archivo(nombreArchivo.c_str());
-  string linea;
-  // Obtener línea de archivo, y almacenar contenido en "linea"
-  while (getline(archivo, linea)) {
-    cout << linea << endl;
-    lli resp, prev = 0;
-    vll nums;
-    for (int i = 0; i<linea.size(); i++){
-        if (linea[i] == ':'){
-            cout << linea.substr(prev, i-prev) << endl;
-            resp = stoll(linea.substr(prev, i-prev));
-            i+=2;
-            prev = i;
+  vector<string> mapa;
+  string el;
+  while(cin >> el){
+    mapa.PB(el);
+  }
+  pii coords_act;
+  set<pii> coords_visited;
+  int dir;
+  vector<pii> suma = {{-1, 0}, {0,1}, {1,0}, {0,-1}};
+  vector<char> caracter = {'^', '>', 'v', '<'};
+  for (int i = 0; i<mapa.size(); i++){
+    for(int j = 0; j<mapa[i].size(); j++){
+        if(mapa[i][j] == '^'){
+            coords_act.first = i;
+            coords_act.second = j;
+            dir = 0;
+            break;
         }
-        if (linea[i] == ' '){
-            cout << linea.substr(prev, i-prev) << ", ";
-            nums.PB(stoll(linea.substr(prev, i-prev)));
-            i++;
-            prev = i;
+        if(mapa[i][j] == '>'){
+            coords_act.first = i;
+            coords_act.second = j;
+            dir = 1;
+            break;
         }
-    }
-    cout << linea.substr(prev, linea.size()-prev) << endl;
-    nums.PB(stoll(linea.substr(prev, linea.size()-prev)));
-    cout << "###  " << sol << "  ###" << endl;
-    if (opera(nums, resp, nums[0])){
-        sol+= resp;
+        if(mapa[i][j] == 'v'){
+            coords_act.first = i;
+            coords_act.second = j;
+            dir = 2;
+            break;
+        }
+        if(mapa[i][j] == '<'){
+            coords_act.first = i;
+            coords_act.second = j;
+            dir = 3;
+            break;
+        }
     }
   }
-  cout << "SOL 1: " << sol << endl;
+  while(true){
+    //cout << coords_act.first << " " << coords_act.second << endl;
+    coords_visited.insert(coords_act);
+    if ((coords_act.first == 0 &&  dir == 0) || (coords_act.first == mapa.size()-1 && dir == 2) || (coords_act.second == 0 && dir == 3) || (coords_act.second == mapa[0].size()-1 && dir == 1)){
+        break;
+    } else {
+        if (mapa[coords_act.first+suma[dir].first][coords_act.second+suma[dir].second] == '.'){
+            mapa[coords_act.first+suma[dir].first][coords_act.second+suma[dir].second] = mapa[coords_act.first][coords_act.second];
+            mapa[coords_act.first][coords_act.second] = '.';
+            coords_act.first+=suma[dir].first;
+            coords_act.second+=suma[dir].second;
+        } else {
+            dir++;
+            dir = dir%4;
+            mapa[coords_act.first][coords_act.second] = caracter[dir];
+        }
+    }
+    /*for (int i = 0; i<mapa.size(); i++){
+        cout << mapa[i] << endl;
+    }
+    cout<<endl;*/
+  }
+  for (auto it = coords_visited.begin(); it != coords_visited.end(); it++){
+    cout << "(" << (*it).first << ", " << (*it).second << ") , ";
+  }
+  cout << endl;
+  cout << coords_visited.size() << endl;
   return 0;
 }
 
-int main() {
+int main(){
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr); 

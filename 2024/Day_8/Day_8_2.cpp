@@ -165,61 +165,71 @@ vi lee(int n) {
   return (vect);
 }
 
-bool opera(vll& nums, lli& resp, lli carry, int index = 1) {
-    if (carry < 0){
-        cout << "### OVERFLOW ###" << endl;
-    }
-    if (index == nums.size()){
-        return carry == resp;
-    }
-    bool sol = false;
-    sol = opera(nums, resp, carry+nums[index], index+1);
-    if (!sol){
-        sol = opera(nums, resp, carry*nums[index], index+1);
-    }
-    if (!sol){
-        for (int i = 0; i<to_string(nums[index]).size(); i++){
-            carry*=10;
-        }
-        sol = opera(nums, resp, carry + nums[index], index+1);
-    }
-    return sol;
-}
-
 int solve() {
   // Code aquí
-  lli sol = 0;
-
-  string nombreArchivo = "input.in";
-  ifstream archivo(nombreArchivo.c_str());
-  string linea;
-  // Obtener línea de archivo, y almacenar contenido en "linea"
-  while (getline(archivo, linea)) {
-    cout << linea << endl;
-    lli resp, prev = 0;
-    vll nums;
-    for (int i = 0; i<linea.size(); i++){
-        if (linea[i] == ':'){
-            cout << linea.substr(prev, i-prev) << endl;
-            resp = stoll(linea.substr(prev, i-prev));
-            i+=2;
-            prev = i;
+  vector<string> mapa;
+  string el;
+  while(cin >> el){
+    mapa.PB(el);
+  }
+  map<char, vector<pii>> ubicaciones;
+  pii pair_el;
+  for (int i = 0; i<mapa.size(); i++){
+    for(int j = 0; j<mapa[i].size(); j++){
+        if (mapa[i][j] != '.'){
+            pair_el.first = i;
+            pair_el.second = j;
+            if (ubicaciones.count(mapa[i][j]) > 0){
+                ubicaciones[mapa[i][j]].PB(pair_el);
+            } else {
+                ubicaciones[mapa[i][j]] = {};
+                ubicaciones[mapa[i][j]].PB(pair_el);
+            }
         }
-        if (linea[i] == ' '){
-            cout << linea.substr(prev, i-prev) << ", ";
-            nums.PB(stoll(linea.substr(prev, i-prev)));
-            i++;
-            prev = i;
-        }
-    }
-    cout << linea.substr(prev, linea.size()-prev) << endl;
-    nums.PB(stoll(linea.substr(prev, linea.size()-prev)));
-    cout << "###  " << sol << "  ###" << endl;
-    if (opera(nums, resp, nums[0])){
-        sol+= resp;
     }
   }
-  cout << "SOL 1: " << sol << endl;
+  for (int i = 0; i<mapa.size(); i++){
+    cout << mapa[i] << endl;
+  }
+  cout << endl;
+
+  set<pii> nodes; 
+  int div;
+  for (auto it = ubicaciones.begin(); it != ubicaciones.end(); it++){
+    for (int i = 0; i<(*it).second.size(); i++){
+        for (int j = i; j<(*it).second.size(); j++){
+            if (i != j){
+                pair_el.first = (*it).second[i].first;
+                pair_el.second = (*it).second[i].second;
+                div = maximo_comun_divisor((*it).second[i].first-(*it).second[j].first, (*it).second[i].second-(*it).second[j].second);
+                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
+                    cout << pair_el.first << " " << pair_el.second << endl;
+                    nodes.insert(pair_el);
+                    if (mapa[pair_el.first][pair_el.second] == '.'){
+                        mapa[pair_el.first][pair_el.second] = '#';
+                    }
+                    pair_el.first += ((*it).second[i].first-(*it).second[j].first)/div;
+                    pair_el.second += ((*it).second[i].second-(*it).second[j].second)/div;
+                }
+                pair_el.first = (*it).second[j].first;
+                pair_el.second = (*it).second[j].second;
+                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
+                    cout << pair_el.first << " " << pair_el.second << endl;
+                    nodes.insert(pair_el);
+                    if (mapa[pair_el.first][pair_el.second] == '.'){
+                        mapa[pair_el.first][pair_el.second] = '#';
+                    }
+                    pair_el.first += ((*it).second[j].first-(*it).second[i].first)/div;
+                    pair_el.second += ((*it).second[j].second-(*it).second[i].second)/div;
+                }
+            }
+        }   
+    }
+  }
+  for (int i = 0; i<mapa.size(); i++){
+    cout << mapa[i] << endl;
+  }
+  cout << endl << nodes.size() << endl;
   return 0;
 }
 
@@ -228,5 +238,8 @@ int main() {
   cin.tie(nullptr);
   cout.tie(nullptr); 
   solve();
+  
   return 0;
 }
+
+//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)
