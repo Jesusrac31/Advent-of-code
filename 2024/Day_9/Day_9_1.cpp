@@ -167,69 +167,48 @@ vi lee(int n) {
 
 int solve() {
   // Code aquí
-  vector<string> mapa;
+  vll amount;
+  vll escheme;
+  bool numero = true;
   string el;
-  while(cin >> el){
-    mapa.PB(el);
+  cin >> el;
+  for(int i = 0; i<el.size(); i++){
+    escheme.PB(stoll(el.substr(i,1)));
+    if (numero) {
+        amount.PB(stoll(el.substr(i,1)));
+    }
+    numero = !numero;
   }
-  map<char, vector<pii>> ubicaciones;
-  pii pair_el;
-  for (int i = 0; i<mapa.size(); i++){
-    for(int j = 0; j<mapa[i].size(); j++){
-        if (mapa[i][j] != '.'){
-            pair_el.first = i;
-            pair_el.second = j;
-            if (ubicaciones.count(mapa[i][j]) > 0){
-                ubicaciones[mapa[i][j]].PB(pair_el);
-            } else {
-                ubicaciones[mapa[i][j]] = {};
-                ubicaciones[mapa[i][j]].PB(pair_el);
-            }
+  lli sol = 0, index = 0;
+  int index_amount = 0, index_scheme = 0;
+  int l = 0, r = amount.size()-1;
+  numero = true;
+  while (l<=r){
+    sol += index*index_amount;
+    index++;
+    amount[index_amount]--;
+    escheme[index_scheme]--;
+    while (amount[index_amount] == 0){
+        if (numero){
+            l++;
+            index_amount++;
+        } else {
+            r--;
+            index_amount--;
+        }
+    }
+    while (escheme[index_scheme] == 0){
+        index_scheme++;
+        if (numero){
+            numero = false;
+            index_amount = r;
+        } else {
+            numero = true;
+            index_amount = l;
         }
     }
   }
-  for (int i = 0; i<mapa.size(); i++){
-    cout << mapa[i] << endl;
-  }
-  cout << endl;
-
-  set<pii> nodes; 
-  int div;
-  for (auto it = ubicaciones.begin(); it != ubicaciones.end(); it++){
-    for (int i = 0; i<(*it).second.size(); i++){
-        for (int j = i; j<(*it).second.size(); j++){
-            if (i != j){
-                pair_el.first = (*it).second[i].first;
-                pair_el.second = (*it).second[i].second;
-                div = maximo_comun_divisor((*it).second[i].first-(*it).second[j].first, (*it).second[i].second-(*it).second[j].second);
-                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
-                    cout << pair_el.first << " " << pair_el.second << endl;
-                    nodes.insert(pair_el);
-                    if (mapa[pair_el.first][pair_el.second] == '.'){
-                        mapa[pair_el.first][pair_el.second] = '#';
-                    }
-                    pair_el.first += ((*it).second[i].first-(*it).second[j].first)/div;
-                    pair_el.second += ((*it).second[i].second-(*it).second[j].second)/div;
-                }
-                pair_el.first = (*it).second[j].first;
-                pair_el.second = (*it).second[j].second;
-                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
-                    cout << pair_el.first << " " << pair_el.second << endl;
-                    nodes.insert(pair_el);
-                    if (mapa[pair_el.first][pair_el.second] == '.'){
-                        mapa[pair_el.first][pair_el.second] = '#';
-                    }
-                    pair_el.first += ((*it).second[j].first-(*it).second[i].first)/div;
-                    pair_el.second += ((*it).second[j].second-(*it).second[i].second)/div;
-                }
-            }
-        }   
-    }
-  }
-  for (int i = 0; i<mapa.size(); i++){
-    cout << mapa[i] << endl;
-  }
-  cout << endl << nodes.size() << endl;
+  cout << sol << endl;
   return 0;
 }
 
@@ -238,6 +217,5 @@ int main() {
   cin.tie(nullptr);
   cout.tie(nullptr); 
   solve();
-  
   return 0;
 }

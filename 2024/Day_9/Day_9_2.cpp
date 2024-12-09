@@ -167,69 +167,48 @@ vi lee(int n) {
 
 int solve() {
   // Code aquí
-  vector<string> mapa;
+  vector<vll> amount; //Begin, extension, valor
+  vector<pair<lli, lli>> spaces; // Begin, extension
+  bool numero = true;
   string el;
-  while(cin >> el){
-    mapa.PB(el);
+  vll el_vll;
+  pair<lli, lli> el_pair;
+  cin >> el;
+  lli suma = 0;
+  for(int i = 0; i<el.size(); i++){
+    if (numero) {
+        el_vll = {suma, stoll(el.substr(i,1)), (lli)amount.size()};
+        amount.PB(el_vll);
+    } else {
+        el_pair.first = suma;
+        el_pair.second = stoll(el.substr(i,1));
+        spaces.PB(el_pair);
+    }
+    suma += stoll(el.substr(i,1));
+    numero = !numero;
   }
-  map<char, vector<pii>> ubicaciones;
-  pii pair_el;
-  for (int i = 0; i<mapa.size(); i++){
-    for(int j = 0; j<mapa[i].size(); j++){
-        if (mapa[i][j] != '.'){
-            pair_el.first = i;
-            pair_el.second = j;
-            if (ubicaciones.count(mapa[i][j]) > 0){
-                ubicaciones[mapa[i][j]].PB(pair_el);
-            } else {
-                ubicaciones[mapa[i][j]] = {};
-                ubicaciones[mapa[i][j]].PB(pair_el);
-            }
+  numero = true;
+  for (int index_amount = amount.size()-1; index_amount >=0; index_amount--){
+    for (int index_space = 0; index_space < spaces.size(); index_space++){
+        if (amount[index_amount][1] <= spaces[index_space].second && amount[index_amount][0] >= spaces[index_space].first){
+            spaces[index_space].second-=amount[index_amount][1];
+            amount[index_amount][0] = spaces[index_space].first;
+            spaces[index_space].first += amount[index_amount][1];
+            break;
         }
     }
   }
-  for (int i = 0; i<mapa.size(); i++){
-    cout << mapa[i] << endl;
-  }
-  cout << endl;
-
-  set<pii> nodes; 
-  int div;
-  for (auto it = ubicaciones.begin(); it != ubicaciones.end(); it++){
-    for (int i = 0; i<(*it).second.size(); i++){
-        for (int j = i; j<(*it).second.size(); j++){
-            if (i != j){
-                pair_el.first = (*it).second[i].first;
-                pair_el.second = (*it).second[i].second;
-                div = maximo_comun_divisor((*it).second[i].first-(*it).second[j].first, (*it).second[i].second-(*it).second[j].second);
-                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
-                    cout << pair_el.first << " " << pair_el.second << endl;
-                    nodes.insert(pair_el);
-                    if (mapa[pair_el.first][pair_el.second] == '.'){
-                        mapa[pair_el.first][pair_el.second] = '#';
-                    }
-                    pair_el.first += ((*it).second[i].first-(*it).second[j].first)/div;
-                    pair_el.second += ((*it).second[i].second-(*it).second[j].second)/div;
-                }
-                pair_el.first = (*it).second[j].first;
-                pair_el.second = (*it).second[j].second;
-                while (pair_el.first>=0 && pair_el.first<mapa.size() && pair_el.second>=0 && pair_el.second<mapa[0].size()){
-                    cout << pair_el.first << " " << pair_el.second << endl;
-                    nodes.insert(pair_el);
-                    if (mapa[pair_el.first][pair_el.second] == '.'){
-                        mapa[pair_el.first][pair_el.second] = '#';
-                    }
-                    pair_el.first += ((*it).second[j].first-(*it).second[i].first)/div;
-                    pair_el.second += ((*it).second[j].second-(*it).second[i].second)/div;
-                }
-            }
-        }   
+  lli sol = 0;
+  for (int i = 0; i<amount.size(); i++){
+    cout << amount[i][0] << " " << amount[i][1] << " " << amount[i][2] << endl;
+    for (lli j = 0; j<amount[i][1]; j++){
+        //cout << (j+amount[i][0])*amount[i][2] << endl;
+        sol += (j+amount[i][0])*amount[i][2];
     }
   }
-  for (int i = 0; i<mapa.size(); i++){
-    cout << mapa[i] << endl;
-  }
-  cout << endl << nodes.size() << endl;
+  
+  
+  cout << sol << endl;
   return 0;
 }
 
@@ -238,6 +217,5 @@ int main() {
   cin.tie(nullptr);
   cout.tie(nullptr); 
   solve();
-  
   return 0;
 }
