@@ -17,6 +17,10 @@
         "valarray": "cpp",
         "cstdint": "cpp",
         "cinttypes": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "bitset": "cpp",
+        "random": "cpp",
+        "cstdbool": "cpp",
+        "iosfwd": "cpp"
     }
 }
